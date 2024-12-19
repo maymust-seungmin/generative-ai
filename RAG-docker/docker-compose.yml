@@ -11,8 +11,8 @@ services:
       # 특정 IP에 바인딩해야 하는 경우 아래와 같이 설정할 수 있습니다.
       # - "172.16.14.195:7860:7860"
     volumes:
-      - ./src:/src # 호스트의 data 디렉토리를 컨테이너의 /data에 매핑
-      - ./assets:/app/assets # 호스트의 samples 디렉토리를 컨테이너의 /workspace/samples에 매핑
+      - ./src:/app/src
+      - ./assets:/app/assets
     deploy:
       resources:
         reservations:
@@ -20,4 +20,3 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu] # NVIDIA GPU 사용 설정
-    restart: unless-stopped # 컨테이너가 예기치 않게 종료될 경우 재시작

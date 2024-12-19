@@ -23,13 +23,6 @@ RUN pip install --no-cache-dir poetry && poetry config virtualenvs.create true
 COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-root --no-dev
 
-COPY src app
-COPY assets app
-
-# Populate local environment variables
-COPY .env .
-# RUN source .env && printenv # To debug, uncomment this line to see env vars in the build logs
-# ENV $(cat .env)
 
 CMD ["python", "/app/src/main.py"]
 
