@@ -1,25 +1,23 @@
 services:
   gradio-app:
-    image: rag-chatbot
     build:
       context: .
       dockerfile: Dockerfile
+    image: rag-chatbot # 빌드된 이미지를 사용
     env_file:
-      - .env
+      - .env # 환경 변수 파일 지정
     ports:
-#      - "7860:7860"    #### use when accessing on laptop internally to localhost
-#      - "172.16.14.195:7860:7860"    #### use when accessing through browser on jump box
-      - "YOUR-IP:7860:7860"    
+      - "7860:7860" # 호스트의 7860 포트를 컨테이너의 7860 포트에 매핑
+      # 특정 IP에 바인딩해야 하는 경우 아래와 같이 설정할 수 있습니다.
+      # - "172.16.14.195:7860:7860"
     volumes:
-      - ${LOCAL_WORKSPACE_FOLDER:-.}/data:/data
-      - ${LOCAL_WORKSPACE_FOLDER:-.}/samples:/workspace/samples
-    # command: bash -c "pip install gradio && python3 app.py"
+      - ./src:/src # 호스트의 data 디렉토리를 컨테이너의 /data에 매핑
+      - ./assets:/app/assets # 호스트의 samples 디렉토리를 컨테이너의 /workspace/samples에 매핑
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
               count: 1
-              capabilities: [ gpu ]
-volumes:
-  rag-chatbot-data:
+              capabilities: [gpu] # NVIDIA GPU 사용 설정
+    restart: unless-stopped # 컨테이너가 예기치 않게 종료될 경우 재시작
