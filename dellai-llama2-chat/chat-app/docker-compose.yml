@@ -12,7 +12,7 @@ services:
       - api-server
       - rasa
     environment:
-      IP_ADDRESS: $IP_ADDRESS
+      IP_ADDRESS: 122.199.161.12
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://api-server:8000/health || exit 1"]
       interval: 30s
