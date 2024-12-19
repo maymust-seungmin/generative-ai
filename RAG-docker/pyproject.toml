@@ -23,6 +23,7 @@ accelerate = "^1.2.1"
 chroma-hnswlib = "0.7.3"
 chromadb = "0.4.24"
 transformers = "^4.47.1"
+python-dotenv = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"

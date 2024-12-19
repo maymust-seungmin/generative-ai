@@ -10,6 +10,9 @@ from gradioUI import GradioUI
 from llm import LLM
 import gradio as gr
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def info():
@@ -24,8 +27,8 @@ def info():
 
 def main():
     info()
-    
-    gradio = GradioUI(llm=LLM(hf_token="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"))
+
+    gradio = GradioUI(llm=LLM(hf_token=os.getenv("HF_TOKEN")))
     chat_interface = gr.ChatInterface(
         fn=gradio.process_input,
         chatbot=gr.Chatbot(
