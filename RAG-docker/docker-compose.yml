@@ -3,20 +3,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: rag-chatbot # 빌드된 이미지를 사용
+    image: rag-chatbot
     env_file:
-      - .env # 환경 변수 파일 지정
+      - .env
     ports:
-      - "7860:7860" # 호스트의 7860 포트를 컨테이너의 7860 포트에 매핑
-      # 특정 IP에 바인딩해야 하는 경우 아래와 같이 설정할 수 있습니다.
-      # - "172.16.14.195:7860:7860"
-    volumes:
-      - ./src:/app/src
-      - ./assets:/app/assets
+      - "7860:7860"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
               count: 1
-              capabilities: [gpu] # NVIDIA GPU 사용 설정
+              capabilities: [gpu]

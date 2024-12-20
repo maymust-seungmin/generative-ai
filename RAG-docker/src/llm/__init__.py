@@ -17,7 +17,7 @@ from langchain import HuggingFacePipeline, PromptTemplate
 from langchain.chains import LLMChain, RetrievalQA
 from langchain.memory import ConversationBufferWindowMemory
 import torch
-
+from pathlib import Path
 
 class LLM:
     def __init__(
@@ -67,11 +67,12 @@ class LLM:
     def _set_vectordb(self):
         """Instruct 임베딩 모델과 문서들을 결합하여 크로마DB 객체 초기화 및 반환"""
 
-        pdf_dir_loader = PyPDFDirectoryLoader("assets/pdf/")
-        events_loader = CSVLoader(
-            "../assets/csv/dtw24-concierge-events-04-22-24-csv.csv",
-            encoding="windows-1252",
-        )
+        current_dir = Path(__file__).resolve().parent
+        csv_path = current_dir.parent.parent / "assets" / "csv" / "dtw24-concierge-events-04-22-24-csv.csv"
+        pdf_path = current_dir.parent.parent / "assets" / "pdf"
+
+        events_loader = CSVLoader(str(csv_path), encoding="windows-1252")
+        pdf_dir_loader = PyPDFDirectoryLoader(str(pdf_path))
         # ppt_loader = UnstructuredPowerPointLoader("ppt-content/pan-dell-generative-ai-presentation.pptx")
 
         loader_all = MergedDataLoader(loaders=[events_loader, pdf_dir_loader])
@@ -149,11 +150,11 @@ class LLM:
     ):
         """rag가 아닌 일반적인 text to text 진행"""
 
-        template = (
-            "\n\n [INST] <<SYS>>"
-            + system_prompt
-            + "<</SYS>>\n\n Question: {question} \n\n[/INST]".strip()
-        )
+        template = system_prompt + """
+
+Question: {question}
+      
+Helpful Answer:"""
         prompt = PromptTemplate(template=template, input_variables=["question"])
 
         # singleton pattern
@@ -180,11 +181,13 @@ class LLM:
     ):
         """rag 기반 text to text 진행"""
 
-        template = (
-            "\n\n [INST] <<SYS>>"
-            + system_prompt
-            + "<</SYS>>\n\n Context: {context} \n\n  Question: {question} \n\n[/INST]".strip()
-        )
+        template = system_prompt + """
+
+Context: {context}
+
+Question: {question}
+
+Helpful Answer:"""
         prompt = PromptTemplate(
             template=template, input_variables=["context", "question"]
         )
