@@ -83,9 +83,7 @@ class GradioUI:
         """gradioUI 컴포넌트를 구성하는 함수"""
 
         theme = gr.themes.Default()
-        with gr.Blocks(
-            theme=theme, title="Docker Concierge Chat"
-        ) as ui:
+        with gr.Blocks(theme=theme, title="Docker Concierge Chat") as ui:
             gr.Markdown(
                 """
             # Retrieval Assistant

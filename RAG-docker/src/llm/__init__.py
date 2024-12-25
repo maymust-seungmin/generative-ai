@@ -19,6 +19,7 @@ from langchain.memory import ConversationBufferWindowMemory
 import torch
 from pathlib import Path
 
+
 class LLM:
     def __init__(
         self,
@@ -53,7 +54,6 @@ class LLM:
         self._streamer = TextIteratorStreamer(
             self._tokenizer, timeout=10, skip_prompt=True, skip_special_tokens=True
         )
-        self._pipeline = None
 
     def _set_embeddings(self, embed_model_name: str):
         """HuggingFace에서 제공하는 Instruct 임베딩 모델 객체 반환"""
@@ -68,7 +68,12 @@ class LLM:
         """Instruct 임베딩 모델과 문서들을 결합하여 크로마DB 객체 초기화 및 반환"""
 
         current_dir = Path(__file__).resolve().parent
-        csv_path = current_dir.parent.parent / "assets" / "csv" / "dtw24-concierge-events-04-22-24-csv.csv"
+        csv_path = (
+            current_dir.parent.parent
+            / "assets"
+            / "csv"
+            / "dtw24-concierge-events-04-22-24-csv.csv"
+        )
         pdf_path = current_dir.parent.parent / "assets" / "pdf"
 
         events_loader = CSVLoader(str(csv_path), encoding="windows-1252")
@@ -150,24 +155,25 @@ class LLM:
     ):
         """rag가 아닌 일반적인 text to text 진행"""
 
-        template = system_prompt + """
+        template = (
+            system_prompt
+            + """
 
 Question: {question}
       
 Helpful Answer:"""
+        )
         prompt = PromptTemplate(template=template, input_variables=["question"])
 
-        # singleton pattern
-        if self._pipeline == None:
-            self._pipeline = self._set_llm_pipeline(
-                max_new_tokens=max_new_tokens,
-                top_p=top_p,
-                top_k=top_k,
-                temperature=temperature,
-                repetition_penalty=repetition_penalty,
-            )
+        pipeline = self._set_llm_pipeline(
+            max_new_tokens=max_new_tokens,
+            top_p=top_p,
+            top_k=top_k,
+            temperature=temperature,
+            repetition_penalty=repetition_penalty,
+        )
 
-        return LLMChain(llm=self._pipeline, prompt=prompt)
+        return LLMChain(llm=pipeline, prompt=prompt)
 
     def rag_mode(
         self,
@@ -181,29 +187,30 @@ Helpful Answer:"""
     ):
         """rag 기반 text to text 진행"""
 
-        template = system_prompt + """
+        template = (
+            system_prompt
+            + """
 
 Context: {context}
 
 Question: {question}
 
 Helpful Answer:"""
+        )
         prompt = PromptTemplate(
             template=template, input_variables=["context", "question"]
         )
 
-        # singleton pattern
-        if self._pipeline == None:
-            self._pipeline = self._set_llm_pipeline(
-                max_new_tokens=max_new_tokens,
-                top_p=top_p,
-                top_k=top_k,
-                temperature=temperature,
-                repetition_penalty=repetition_penalty,
-            )
+        pipeline = self._set_llm_pipeline(
+            max_new_tokens=max_new_tokens,
+            top_p=top_p,
+            top_k=top_k,
+            temperature=temperature,
+            repetition_penalty=repetition_penalty,
+        )
 
         return RetrievalQA.from_chain_type(
-            llm=self._pipeline,
+            llm=pipeline,
             chain_type="stuff",
             chain_type_kwargs={"prompt": prompt},
             retriever=self.vectordb.as_retriever(
