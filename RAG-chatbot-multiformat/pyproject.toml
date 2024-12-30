@@ -18,7 +18,6 @@ dependencies = [
     "gradio>=4.44.1",
     "accelerate>=1.2.1",
     "transformers>=4.47.1",
-    "python-dotenv>=1.0.1",
     "chromadb==0.4.24",
     "jupyter>=1.1.1",
 ]
