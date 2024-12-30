@@ -1,0 +1,31 @@
+[project]
+name = "rag-llama2-custom-pdfs"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12.8"
+dependencies = [
+    "langchain-community>=0.3.13",
+    "langchain>=0.3.13",
+    "torch>=2.5.1",
+    "huggingface-hub==0.24",
+    "pandas>=2.2.3",
+    "unstructured>=0.16.11",
+    "bitsandbytes>=0.45.0",
+    "python-pptx>=1.0.2",
+    "instructorembedding>=1.0.1",
+    "sentence-transformers==2.2.2",
+    "gradio>=4.44.1",
+    "accelerate>=1.2.1",
+    "transformers>=4.47.1",
+    "python-dotenv>=1.0.1",
+    "chromadb==0.4.24",
+    "jupyter>=1.1.1",
+    "pdf2image>=1.17.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=24.10.0",
+    "icecream>=2.1.3",
+]
