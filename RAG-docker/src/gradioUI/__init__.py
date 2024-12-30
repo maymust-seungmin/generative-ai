@@ -88,12 +88,10 @@ class GradioUI:
                 repetition_penalty,
             )({"question": question})
 
-        a = []
-        for b in self.llm._streamer:
-            a.append(b)
-            yield "".join(a)
-
-        # yield self.llm.answer()
+        outputs = []
+        for token in self.llm._streamer:
+            outputs.append(token)
+            yield "".join(outputs)
 
     def ui(self, chat_interface):
         """gradioUI 컴포넌트를 구성하는 함수"""
