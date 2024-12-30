@@ -33,15 +33,15 @@ def main():
         fn=gradio.process_input,
         chatbot=gr.Chatbot(
             bubble_full_width=False,
-            avatar_images=(
-                None,
-                (
-                    os.path.join(
-                        os.path.dirname("__file__"),
-                        "../assets/image/dell-logo-sm.jpg",
-                    )
-                ),
-            ),
+            # avatar_images=(
+            #     None,
+            #     (
+            #         os.path.join(
+            #             os.path.dirname("__file__"),
+            #             "../assets/image/dell-logo-sm.jpg",
+            #         )
+            #     ),
+            # ),
         ),
         examples=[
             ## events csv content

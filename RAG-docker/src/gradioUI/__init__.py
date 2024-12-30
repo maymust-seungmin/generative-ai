@@ -1,6 +1,4 @@
-import os
 import gradio as gr
-import json
 from llm import LLM
 
 
@@ -14,30 +12,43 @@ class GradioUI:
     def _get_unique_files(self) -> str:
         """현재 벡터디비에 있는 파일정보들을 표시"""
 
-        unique_list = list(
-            {doc["source"] for doc in self.llm.vectordb.get()["metadatas"]}
-        )
+        unique_files = {doc["source"] for doc in self.llm.vectordb.get()["metadatas"]}
+        
+        cnt = 1
+        files = []
+        for file in unique_files:
+            files.append(f"{cnt}: {file}")
+            cnt += 1
 
-        return json.dumps(unique_list, indent=4, default=str)
+        return "\n".join(files)
 
     def _get_sources(self):
         """chat Interface 에서 받은 LLM answer가 어떤 source 를 참고해서 나온 답변인지 확인하는 함수"""
         if not self.answer_info:
             return "if you want to see source citations, chat first."
 
-        return json.dumps(self.answer_info, indent=4, default=str)
+        answer = (
+            f"Query: {self.answer_info["query"]}\n\n"
+        )
+
+        for i, doc in enumerate(self.answer_info["source_documents"]):
+            answer += "------------------------------------\n"
+            answer += f"Index: {i + 1}\n"
+            answer += f"Source: {doc.metadata["source"]}\n"
+            answer += f"Content: {doc.page_content}\n"
+            answer += "------------------------------------\n\n"
+
+        return answer
 
     def _get_model_info(self) -> str:
         """모델 정보 반환"""
 
         model_details = (
-            f"\nGeneral Model Info:\n"
-            f"\n-------------------\n"
-            f"\n llm_model_name: {self.llm.llm_model_name} \n"
-            f"\n Model config: {self.llm.model} \n"
-            f"\nGeneral Embeddings Info:\n"
-            f"\n-------------------\n"
-            f"\n Embeddings model config: {self.llm.embeddings} \n"
+            f"Model\n{self.llm.llm_model_name}\n\n"
+            f"Model config\n{self.llm.model}\n\n"
+            f"------------------------------------------------------\n\n"
+            f"Embedding Model\n{self.llm.embed_model_name}\n\n"
+            f"Embedding model config\n{self.llm.embeddings}\n"
         )
 
         return model_details
@@ -77,7 +88,12 @@ class GradioUI:
                 repetition_penalty,
             )({"question": question})
 
-        return self.llm.answer()
+        a = []
+        for b in self.llm._streamer:
+            a.append(b)
+            yield "".join(a)
+
+        # yield self.llm.answer()
 
     def ui(self, chat_interface):
         """gradioUI 컴포넌트를 구성하는 함수"""
@@ -114,13 +130,13 @@ class GradioUI:
                     fn=self._get_model_info, inputs=None, outputs=model_info_text_box
                 )
 
-            self.a = ui
+            self.gradio_ui = ui
 
     def run(self):
         """gradio 웹 UI를 실행시키는 함수"""
 
-        self.a.queue(max_size=5)
-        self.a.launch(
+        self.gradio_ui.queue(max_size=5)
+        self.gradio_ui.launch(
             share=False,
             debug=True,
             server_name="0.0.0.0",

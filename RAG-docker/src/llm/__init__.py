@@ -18,7 +18,7 @@ from langchain.chains import LLMChain, RetrievalQA
 from langchain.memory import ConversationBufferWindowMemory
 import torch
 from pathlib import Path
-
+# from huggingface_hub import login
 
 class LLM:
     def __init__(
@@ -36,6 +36,7 @@ class LLM:
         # llm_model_name samples
         # "mistralai/Mistral-7B-Instruct-v0.2"
         # "meta-llama/Llama-3.2-3B-Instruct"
+        # login(token=hf_token)
 
         self.memory = ConversationBufferWindowMemory(
             k=5,  ## number of interactions to keep in memory
@@ -105,6 +106,7 @@ class LLM:
             llm_model_name,
             quantization_config=bnb_config,
             device_map="auto",
+            token=self.hf_token
         )
 
         return model
@@ -221,7 +223,7 @@ Helpful Answer:"""
             return_source_documents=True,
         )
 
-    def answer(self) -> str:
+    def answer(self):
         """normal_mode 나 rag_mode 함수 실행 후, 모델 answer 반환하는 함수"""
-
-        return "".join(self._streamer)
+        yield self._streamer
+        # return "".join(self._streamer)
