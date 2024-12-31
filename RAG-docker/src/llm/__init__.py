@@ -158,12 +158,8 @@ class LLM:
         """rag가 아닌 일반적인 text to text 진행"""
 
         template = (
-            system_prompt
-            + """
-
-Question: {question}
-      
-Helpful Answer:"""
+            "### Question ###\n{question}\n\n"
+            "### Answer ###\n"
         )
         prompt = PromptTemplate(template=template, input_variables=["question"])
 
@@ -190,15 +186,12 @@ Helpful Answer:"""
         """rag 기반 text to text 진행"""
 
         template = (
-            system_prompt
-            + """
-
-Context: {context}
-
-Question: {question}
-
-Helpful Answer:"""
+            f"### System Instructions ###\n{system_prompt}\n\n"
+            "### Context ###\n{context}\n\n"
+            "### Question ###\n{question}\n\n"
+            "### Answer ###\n"
         )
+
         prompt = PromptTemplate(
             template=template, input_variables=["context", "question"]
         )

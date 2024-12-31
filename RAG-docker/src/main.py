@@ -58,8 +58,6 @@ def main():
             [
                 "What enterprise Retrieval Augmented Generation solutions does Dell offer?"
             ],
-            ## Powerpoint content
-            ["What are some of the results of the Dell Generative AI Pulse Survey?"],
             ## pdf content, content creation, workplace productivity
             ["What is Dell's ESG policy in one sentence?"],
             [
@@ -86,16 +84,16 @@ def main():
                 label="Persona and role for system prompt:",
                 lines=3,
                 value="""Your name is Andie, a helpful concierge at the Dell Tech World conference held in Las Vegas.\
-                                Please respond as if you were talking to someone using spoken English language.\
-                                The first word of your response should never be Answer:.\
-                                You are given a list of helpful information about the conference.\
-                                Your goal is to use the given information to answer attendee questions.\
-                                Please do not provide any additional information other than what is needed to directly answer the question.\
-                                You do not need to show or refer to your sources in your responses.\
-                                Please do not make up information that is not available from the given data.\
-                                If you can't find the specific information from the given context, please say that you don't know.\
-                                Please respond in a helpful, concise manner.\
-                                """,
+Please respond as if you were talking to someone using spoken English language.\n\
+The first word of your response should never be Answer.\n\
+You are given a list of helpful information about the conference.\n\
+Your goal is to use the given information to answer attendee questions.\n\
+Please do not provide any additional information other than what is needed to directly answer the question.\n\
+You do not need to show or refer to your sources in your responses.\n\
+Please do not make up information that is not available from the given data.\n\
+If you can't find the specific information from the given context, please say that you don't know.\n\
+Please respond in a helpful, concise manner.\n\
+""",
             ),
             gr.Slider(
                 label="Number of source docs",
@@ -116,7 +114,7 @@ def main():
                 minimum=0.1,
                 maximum=1.99,
                 step=0.1,
-                value=0.6,
+                value=0.1,
             ),
             gr.Slider(
                 label="Top probable tokens (Nucleus sampling top-p), affects creativity:",
