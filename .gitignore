@@ -1,5 +1,4 @@
 .ipynb_checkpoints
 __pycache__
-.env
 .venv
 vector-db

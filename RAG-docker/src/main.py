@@ -11,6 +11,7 @@ from llm import LLM
 import gradio as gr
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 
@@ -28,20 +29,18 @@ def info():
 def main():
     info()
 
+    current_dir = Path(__file__).resolve().parent
+    image_path = current_dir.parent / "assets" / "image" / "dell-logo-sm.jpg"
+
     gradio = GradioUI(llm=LLM(hf_token=os.getenv("HF_TOKEN")))
     chat_interface = gr.ChatInterface(
         fn=gradio.process_input,
         chatbot=gr.Chatbot(
             bubble_full_width=False,
-            # avatar_images=(
-            #     None,
-            #     (
-            #         os.path.join(
-            #             os.path.dirname("__file__"),
-            #             "../assets/image/dell-logo-sm.jpg",
-            #         )
-            #     ),
-            # ),
+            avatar_images=(
+                None,
+                str(image_path)
+            ),
         ),
         examples=[
             ## events csv content
